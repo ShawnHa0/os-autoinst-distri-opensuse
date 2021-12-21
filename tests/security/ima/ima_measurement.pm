@@ -29,8 +29,8 @@ sub run {
     $self->select_serial_terminal;
 
     # Upload files for reference before test dies
-    assert_script_run("cp $meas_file $meas_tmpfile");
-    upload_logs "$meas_tmpfile";
+    # assert_script_run("cp $meas_file $meas_tmpfile");
+    # upload_logs "$meas_tmpfile";
 
     # Format verification
     assert_script_run(
@@ -46,6 +46,8 @@ sub run {
     assert_script_run("echo 'This is a test!' > $sample_file");
     my $sample_sha = script_output("sha256sum $sample_file |cut -d' ' -f1");
     my $sample_meas_sha = script_output("grep '$sample_file' $meas_file |awk -F'[ :]' '{print \$5}'");
+    assert_script_run("cp $meas_file $meas_tmpfile");
+    upload_logs "$meas_tmpfile";
     die 'The SHA256 values does not match' if ($sample_sha ne $sample_meas_sha);
 }
 
