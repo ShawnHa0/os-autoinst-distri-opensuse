@@ -17,6 +17,7 @@ use warnings;
 use testapi;
 use utils;
 use Utils::Backends 'is_pvm';
+use version_utils 'is_sle';
 
 sub reboot_and_check {
     my ($self, $status) = @_;
@@ -38,7 +39,11 @@ sub run {
     select_console 'root-console';
 
     # Verify the eBPF status: OS should be disabled unprivileged eBPF by default
-    validate_script_output("cat $f_unpriv_bpf_disabled", sub { m/2/ });
+    if (is_sle) {
+        validate_script_output("cat $f_unpriv_bpf_disabled", sub { m/2/ });
+    } else {
+        validate_script_output("cat $f_unpriv_bpf_disabled". sub { m/0/ });
+    }
 
     # Re-enable unprivileged eBPF temporarily using 'systemctl'
     validate_script_output('sysctl kernel.unprivileged_bpf_disabled=0', sub { m/kernel.unprivileged_bpf_disabled = 0/ });
