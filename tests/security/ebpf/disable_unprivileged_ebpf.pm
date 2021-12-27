@@ -42,7 +42,7 @@ sub run {
     if (is_sle) {
         validate_script_output("cat $f_unpriv_bpf_disabled", sub { m/2/ });
     } else {
-        validate_script_output("cat $f_unpriv_bpf_disabled". sub { m/0/ });
+        validate_script_output("cat $f_unpriv_bpf_disabled", sub { m/0/ });
     }
 
     # Re-enable unprivileged eBPF temporarily using 'systemctl'
